@@ -1,9 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.townsfolk:gradle-release:1.2'
+    }
+}
+
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'release'
 
-version = '1.0-SNAPSHOT'
 group = 'de.felixschulze.gradle'
 
 ext.archivesBaseName = 'gradle-xcode-plugin'
@@ -48,7 +57,6 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-
 install.repositories.mavenInstaller {
     pom.project(pomConfiguration)
     if (signing.signatory) {
@@ -69,6 +77,10 @@ uploadArchives {
         }
         pom.project(pomConfiguration)
     }
+}
+
+release {
+    createReleaseTag.dependsOn uploadArchives
 }
 
 /**v

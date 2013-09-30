@@ -1,0 +1,17 @@
+// Example build file
+
+buildscript {
+	repositories {
+   	 mavenLocal()
+   	 mavenCentral()
+	}
+	dependencies {
+		classpath group: 'de.felixschulze.gradle', name: 'gradle-xcode-plugin', version: '1.0-SNAPSHOT'
+	}
+}
+
+apply plugin: 'xcode'
+
+xcode {
+    xcodeProject = "test.xcodeproj"
+}

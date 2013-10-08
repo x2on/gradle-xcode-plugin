@@ -27,6 +27,7 @@ package de.felixschulze.gradle
 import de.felixschulze.gradle.helper.PlistHelper
 import de.felixschulze.teamcity.TeamCityStatusMessageHelper
 import de.felixschulze.teamcity.TeamCityStatusType
+import org.gradle.api.GradleScriptException
 import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -111,10 +112,12 @@ class XcodeBuild {
                         if (cleanedErrorString.contains(COMPILE_XIB_ERROR)) {
                             println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Interface builder crashed')
                             LOG.error("Interface builder crashed.")
+                            throw new GradleScriptException("Interface builder crashed.", null)
 
                         } else {
                             println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Build failed')
                             LOG.error("Build failed.")
+                            throw new GradleScriptException("Build failed", null)
                         }
                     }
                 }

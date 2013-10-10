@@ -60,6 +60,13 @@ class XcodePlugin implements Plugin<Project> {
         ghUnitTestTask.description = "Run GHUnit Tests"
         ghUnitTestTask.outputs.upToDateWhen { false }
 
+        ClangScanTask clangScanTask = project.tasks.create("clangScanBuild", ClangScanTask)
+        clangScanTask.group = XCODE_GROUP_NAME
+        clangScanTask.description = "Run clang scan-build"
+        clangScanTask.outputs.upToDateWhen { false }
+        clangScanTask.output = project.buildDir
+
+
     }
 
     void configureDependencies(final Project project) {

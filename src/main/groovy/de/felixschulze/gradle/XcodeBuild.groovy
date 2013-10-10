@@ -40,7 +40,7 @@ class XcodeBuild {
     private final String COMPILE_XIB_ERROR = "CompileXIB";
     private final String IBTOOL_ERROR = "Exception while running ibtool: connection went invalid while waiting for a reply because a mach port died";
 
-    public def build(Project project, String xcodeScheme, String xcodeSdk, File output) {
+    public def commands(Project project, String xcodeScheme, String xcodeSdk, File output) {
         def commands = [
                 "xcodebuild",
         ]
@@ -81,6 +81,11 @@ class XcodeBuild {
         if (project.xcode.codeSignIdentity != null) {
             commands.add("CODE_SIGN_IDENTITY=" + project.xcode.codeSignIdentity);
         }
+        return commands
+    }
+
+    public def build(Project project, String xcodeScheme, String xcodeSdk, File output) {
+        def commands = commands(project, xcodeScheme, xcodeSdk, output)
 
         if (project.xcode.infoPlist != null) {
             PlistHelper.changesValuesInPlist(project.projectDir, new File(project.xcode.infoPlist), project.xcode.bundleIdentifierSuffix, project.xcode.bundleDisplayNameSuffix, project.xcode.bundleVersionFromGit, project.xcode.teamCityLog)

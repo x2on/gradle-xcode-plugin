@@ -65,7 +65,6 @@ class ClangScanTask extends DefaultTask {
             Matcher matcher = (it =~ regex)
 
             if (matcher.matches()) {
-                println "MATCHES: " + matcher[0][1]
                 numberOfBugs = matcher[0][1] as int
             }
             output += it

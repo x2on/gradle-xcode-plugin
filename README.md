@@ -12,12 +12,19 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'de.felixschulze.gradle:gradle-xcode-plugin:1.0-SNAPSHOT'
+        classpath 'de.felixschulze.gradle:gradle-xcode-plugin:0.2'
     }
 }
 
 apply plugin: 'xcode'
 ```
+
+## Tasks
+
+* `xcodeBuild` : Build project
+* `xcodeClean` : Clean project and delete build directory
+* `clangScanBuild` : Run clang [scan-build](http://clang-analyzer.llvm.org/scan-build.html)
+* `ghunitTest` : Run GHUnit Tests
 
 ## Advanced usage
 

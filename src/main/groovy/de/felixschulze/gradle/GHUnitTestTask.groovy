@@ -70,6 +70,7 @@ class GHUnitTestTask extends DefaultTask {
 
         File appDirectory = new File(project.getBuildDir(), project.xcode.xcodeConfiguration + "-iphonesimulator");
         File testResultsDirectory = new File(project.getBuildDir(), "test-results");
+        File testImagesDirectory = new File(project.getBuildDir(), "test-images");
 
         File appFile = new File(appDirectory, project.xcode.ghunitAppName + ".app");
 
@@ -95,6 +96,10 @@ class GHUnitTestTask extends DefaultTask {
             commands.add("WRITE_JUNIT_XML=1");
             commands.add("--setenv");
             commands.add("JUNIT_XML_DIR=" + testResultsDirectory.getAbsolutePath());
+            commands.add("--setenv");
+            commands.add("GHUNIT_CLI=1");
+            commands.add("--setenv");
+            commands.add("GHUNIT_DOCS_DIR=" + testImagesDirectory.getAbsolutePath());
         }
 
         if (project.xcode.ghunitTestDeviceRetina) {

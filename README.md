@@ -1,4 +1,4 @@
-# gradle-xcode-plugin 
+# gradle-xcode-plugin [![Build Status](https://travis-ci.org/x2on/gradle-xcode-plugin.png)](https://travis-ci.org/x2on/gradle-xcode-plugin) [![License](https://go-shields.herokuapp.com/license-MIT-blue.png)](http://opensource.org/licenses/MIT)
 
 A gradle plugin for building xcode projects.
 

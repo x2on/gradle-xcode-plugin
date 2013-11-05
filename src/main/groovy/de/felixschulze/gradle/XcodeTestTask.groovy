@@ -30,17 +30,18 @@ import org.gradle.api.tasks.TaskAction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class XcodeBuildTask extends DefaultTask {
+
+class XcodeTestTask extends DefaultTask {
 
     @OutputDirectory
     File output
 
-    private static final Logger LOG = LoggerFactory.getLogger(XcodeBuildTask.class)
+    private static final Logger LOG = LoggerFactory.getLogger(XcodeTestTask.class)
 
     @TaskAction
-    def xcodeBuild() throws IOException {
+    def xcodeTest() throws IOException {
 
         XcodeBuild xcodeBuild = new XcodeBuild()
-        xcodeBuild.build(project, project.xcode.xcodeScheme, project.xcode.xcodeSdk, output, false)
+        xcodeBuild.build(project, project.xcode.xcodeScheme, project.xcode.xcodeSdk, output, true)
     }
 }

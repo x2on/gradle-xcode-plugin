@@ -55,6 +55,12 @@ class XcodePlugin implements Plugin<Project> {
         xcodeBuildTask.output = project.buildDir
         xcodeBuildTask.outputs.upToDateWhen { false }
 
+        XcodeTestTask xcodeTestTask = project.tasks.create("xcodeTest", XcodeTestTask)
+        xcodeTestTask.group = XCODE_GROUP_NAME
+        xcodeTestTask.description = "Run tests"
+        xcodeTestTask.output = project.buildDir
+        xcodeTestTask.outputs.upToDateWhen { false }
+
         GHUnitTestTask ghUnitTestTask = project.tasks.create("ghunitTest", GHUnitTestTask)
         ghUnitTestTask.group = XCODE_GROUP_NAME
         ghUnitTestTask.description = "Run GHUnit Tests"

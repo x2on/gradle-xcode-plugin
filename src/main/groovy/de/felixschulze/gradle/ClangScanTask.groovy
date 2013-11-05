@@ -52,7 +52,7 @@ class ClangScanTask extends DefaultTask {
         commands.add(new File(output, "clang-reports").absolutePath)
 
         XcodeBuild xcodeBuild = new XcodeBuild()
-        commands.addAll(xcodeBuild.commands(project, project.xcode.xcodeScheme, project.xcode.xcodeSdk, output))
+        commands.addAll(xcodeBuild.commands(project, project.xcode.xcodeScheme, project.xcode.xcodeSdk, output, false))
 
         Process process = CommandLineRunner.createCommand(".", commands, null)
 

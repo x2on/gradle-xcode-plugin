@@ -39,8 +39,10 @@ class XcodeBuild {
     private final String INTERFACE_BUILDER_ERROR = "Interface Builder encountered an error communicating with the iOS Simulator.";
     private final String COMPILE_XIB_ERROR = "CompileXIB";
     private final String IBTOOL_ERROR = "Exception while running ibtool: connection went invalid while waiting for a reply because a mach port died";
+    private final String XCODE_BUILD_FAILED = "** BUILD FAILED **";
+    private final String XCODE_TEST_FAILED = "** TEST FAILED **";
 
-    public def commands(Project project, String xcodeScheme, String xcodeSdk, File output) {
+    public def commands(Project project, String xcodeScheme, String xcodeSdk, File output, Boolean runTests) {
         def commands = [
                 "xcodebuild",
         ]
@@ -67,7 +69,17 @@ class XcodeBuild {
             commands.add(xcodeSdk);
         }
 
+        if (runTests) {
+            commands.add("-destination");
+            commands.add(project.xcode.xcodeDestination)
+        }
+
         commands.add("build");
+
+        if (runTests) {
+            commands.add("test");
+        }
+
         commands.add("ONLY_ACTIVE_ARCH=NO");
 
         commands.add("OBJROOT=" + output.absolutePath);
@@ -84,8 +96,8 @@ class XcodeBuild {
         return commands
     }
 
-    public def build(Project project, String xcodeScheme, String xcodeSdk, File output) {
-        def commands = commands(project, xcodeScheme, xcodeSdk, output)
+    public def build(Project project, String xcodeScheme, String xcodeSdk, File output, Boolean runTests = false) {
+        def commands = commands(project, xcodeScheme, xcodeSdk, output, runTests)
 
         if (project.xcode.infoPlist != null) {
             PlistHelper.changesValuesInPlist(project.projectDir, new File(project.xcode.infoPlist), project.xcode.bundleIdentifierSuffix, project.xcode.bundleDisplayNameSuffix, project.xcode.bundleVersionFromGit, project.xcode.teamCityLog)
@@ -108,9 +120,10 @@ class XcodeBuild {
                     println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Interface builder crashed')
                 }
                 LOG.error("Interface builder crashed.")
-            } else {
+            }
+            else if (outputString.contains(XCODE_BUILD_FAILED)) {
                 if (project.xcode.teamCityLog) {
-                    String cleanedErrorString = outputString.substring(outputString.indexOf("** BUILD FAILED **"))
+                    String cleanedErrorString = outputString.substring(outputString.indexOf(XCODE_BUILD_FAILED))
                     if (cleanedErrorString != null) {
                         //TODO: Use TeamCityStatusMessageHelper
                         println "##teamcity[message text='BUILD FAILED' errorDetails='" + TeamCityStatusMessageHelper.escapeString(cleanedErrorString) + "' status='ERROR']"
@@ -127,7 +140,13 @@ class XcodeBuild {
                     }
                 }
             }
-
+            else if (outputString.contains(XCODE_TEST_FAILED)) {
+                if (project.xcode.teamCityLog) {
+                    println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Test failed')
+                }
+                LOG.error("Test failed");
+                throw new GradleScriptException("Test failed", null);
+            }
         }
     }
 }

@@ -39,6 +39,8 @@ class XcodePluginExtension {
 
     def String xcodeSdk
 
+    def String xcodeDestination = "platform=iOS Simulator,name=iPhone Retina (4-inch),OS=latest"
+
     def String provisioningProfile
 
     def String codeSignIdentity

@@ -39,6 +39,7 @@ class XcodeBuild {
     private final String INTERFACE_BUILDER_ERROR = "Interface Builder encountered an error communicating with the iOS Simulator.";
     private final String COMPILE_XIB_ERROR = "CompileXIB";
     private final String IBTOOL_ERROR = "Exception while running ibtool: connection went invalid while waiting for a reply because a mach port died";
+    private final String PRECOMPILED_ERROR = "has been modified since the precompiled header"
     private final String XCODE_BUILD_FAILED = "** BUILD FAILED **";
     private final String XCODE_TEST_FAILED = "** TEST FAILED **";
 
@@ -120,6 +121,14 @@ class XcodeBuild {
                     println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Interface builder crashed')
                 }
                 LOG.error("Interface builder crashed.")
+                throw new GradleScriptException("Interface builder crashed.", null)
+            }
+            else if (outputString.contains(PRECOMPILED_ERROR) && outputString.contains(XCODE_BUILD_FAILED)) {
+                if (project.xcode.teamCityLog) {
+                    println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Precompiled header modified')
+                }
+                LOG.error("Precompiled header modified.")
+                throw new GradleScriptException("Precompiled header modified.", null)
             }
             else if (outputString.contains(XCODE_BUILD_FAILED)) {
                 if (project.xcode.teamCityLog) {

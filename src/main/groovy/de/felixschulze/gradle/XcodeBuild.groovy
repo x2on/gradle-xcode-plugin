@@ -32,6 +32,8 @@ import org.gradle.api.Project
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.regex.Pattern
+
 class XcodeBuild {
 
     private static final Logger LOG = LoggerFactory.getLogger(XcodeBuild.class)
@@ -42,6 +44,7 @@ class XcodeBuild {
     private final String PRECOMPILED_ERROR = "has been modified since the precompiled header"
     private final String XCODE_BUILD_FAILED = "** BUILD FAILED **";
     private final String XCODE_TEST_FAILED = "** TEST FAILED **";
+    private final String LIBTOOL_ERROR_REGEX = ".*The following build commands failed:.*Libtool.*";
 
     public def commands(Project project, String xcodeScheme, String xcodeSdk, File output, Boolean runTests) {
         def commands = [
@@ -131,6 +134,14 @@ class XcodeBuild {
                 throw new GradleScriptException("Precompiled header modified.", null)
             }
             else if (outputString.contains(XCODE_BUILD_FAILED)) {
+                Boolean libToolError = Pattern.compile(LIBTOOL_ERROR_REGEX, Pattern.DOTALL).matcher(outputString).matches();
+                if (libToolError) {
+                    if (project.xcode.teamCityLog) {
+                        println TeamCityStatusMessageHelper.buildStatusFailureString(TeamCityStatusType.FAILURE, 'Libtool failed')
+                    }
+                    LOG.error("Libtool failed.")
+                    throw new GradleScriptException("Libtool failed.", null)
+                }
                 if (project.xcode.teamCityLog) {
                     String cleanedErrorString = outputString.substring(outputString.indexOf(XCODE_BUILD_FAILED))
                     if (cleanedErrorString != null) {
@@ -148,6 +159,8 @@ class XcodeBuild {
                         }
                     }
                 }
+                LOG.error("Build failed.")
+                throw new GradleScriptException("Build failed", null)
             }
             else if (outputString.contains(XCODE_TEST_FAILED)) {
                 if (project.xcode.teamCityLog) {
@@ -156,6 +169,9 @@ class XcodeBuild {
                 LOG.error("Test failed");
                 throw new GradleScriptException("Test failed", null);
             }
+
+            LOG.error("Unknown error");
+            throw new GradleScriptException("Unknown error", null);
         }
     }
 }

@@ -12,7 +12,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'de.felixschulze.gradle:gradle-xcode-plugin:0.2'
+        classpath 'de.felixschulze.gradle:gradle-xcode-plugin:0.5+'
     }
 }
 

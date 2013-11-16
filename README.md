@@ -23,6 +23,7 @@ apply plugin: 'xcode'
 
 * `xcodeBuild` : Build project
 * `xcodeClean` : Clean project and delete build directory
+* `xcodeTest` : Run XCTests
 * `clangScanBuild` : Run clang [scan-build](http://clang-analyzer.llvm.org/scan-build.html)
 * `ghunitTest` : Run GHUnit Tests
 
